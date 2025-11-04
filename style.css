@@ -1,0 +1,92 @@
+*,
+*::before,
+*::after {
+     margin: 0;
+     padding: 0;
+     box-sizing: border-box;
+}
+
+body {
+     font-family: 'WixMadeforText-Regular', sans-serif;
+     max-width: 500px;
+     margin: 0 auto;
+     padding: 20px;
+}
+
+#errorMessage {
+     background-color: hsla(0, 69%, 50%, 0.1);
+     color: hsl(0, 69%, 50%);
+     display: none;
+     padding: 10px;
+     margin: 10px 0;
+}
+
+#qrContainer,
+#actionsContainer {
+     display: none;
+}
+
+#qrContainer {
+     border: 1px solid #999;
+     margin-top: 15px;
+     margin-bottom: 15px;
+     padding: 15px;
+     min-height: 220px;
+}
+
+#qrContainer canvas {
+     max-width: 100%;
+     height: auto;
+     image-rendering: -webkit-optimize-contrast;
+     image-rendering: crisp-edges;
+     image-rendering: pixelated;
+}
+
+#finalUrlDisplay {
+     word-break: break-all;
+}
+
+input[type="text"] {
+     padding: 8px;
+     margin: 10px 0;
+     width: 300px;
+     border: 2px solid #ccc;
+}
+
+input[type="text"]:focus {
+     border-color: #4CAF50;
+     box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+input {
+     outline: 0;
+}
+
+button {
+     padding: 10px 15px;
+     margin: 5px;
+     cursor: pointer;
+     border: none;
+     background-color: #45ab48;
+     color: #FFF;
+     font-weight: bold;
+
+     &:hover {
+          background-color: #378d3b;
+     }
+
+     &:active {
+          transform: scale(0.98);
+     }
+}
+
+@media (max-width: 600px) {
+     body {
+          max-width: 100%;
+          padding: 10px;
+     }
+
+     input[type="text"] {
+          width: 100%;
+     }
+}

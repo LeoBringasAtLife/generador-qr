@@ -6,60 +6,7 @@
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <title>Generador QR</title>
 
-     <style>
-          *,
-          *::before,
-          *::after {
-               margin: 0;
-               padding: 0;
-               box-sizing: border-box;
-          }
-
-          body {
-               font-family: 'WixMadeforText-Regular', sans-serif;
-               max-width: 500px;
-               margin: 0 auto;
-               padding: 20px;
-          }
-
-          #errorMessage {
-               display: none;
-               color: hsl(0, 69%, 50%);
-          }
-
-          #qrContainer,
-          #actionsContainer {
-               display: none;
-          }
-
-          #qrContainer canvas {
-               max-width: 100%;
-               height: auto;
-               image-rendering: -webkit-optimize-contrast;
-               image-rendering: crisp-edges;
-               image-rendering: pixelated;
-          }
-
-          #finalUrlDisplay {
-               word-break: break-all;
-          }
-
-          input[type="text"] {
-               padding: 8px;
-               margin: 10px 0;
-               width: 300px;
-          }
-
-          input {
-               outline: 0;
-          }
-
-          button {
-               padding: 10px 10px;
-               margin: 5px;
-               cursor: pointer;
-          }
-     </style>
+     <link rel="stylesheet" href="style.css">
 
 </head>
 
@@ -69,7 +16,7 @@
      <p>Crea códigos QR al instante.</p>
 
      <form id="qrForm">
-          <input type="text" id="urlInput" placeholder="Introduce tu URL:" size="40">
+          <input type="text" id="urlInput" placeholder="Ingresa una URL:" size="40">
           <br>
           <button type="submit" id="generateButton">Generar QR</button>
      </form>
@@ -78,15 +25,12 @@
 
      <p id="errorMessage"></p>
 
-     <div id="qrContainer"
-          style="border: 1px solid #999; margin-top: 15px; padding: 15px; display: none; min-height: 220px;">
-     </div>
+     <div id="qrContainer"></div>
      <br>
      <p> <span id="finalUrlDisplay"></span></p>
 
      <div id="actionsContainer" style="margin-top: 15px;">
           <br>
-
           <button id="copyButton" aria-label="Copiar URL">
                Copiar URL
           </button>
@@ -96,190 +40,7 @@
 
      <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
-     <script>
-          document.addEventListener('DOMContentLoaded', () => {
-
-               // Elementos del DOM
-               const qrForm = document.getElementById('qrForm');
-               const urlInput = document.getElementById('urlInput');
-               const qrContainer = document.getElementById('qrContainer');
-               const errorMessage = document.getElementById('errorMessage');
-               const actionsContainer = document.getElementById('actionsContainer');
-               const finalUrlDisplay = document.getElementById('finalUrlDisplay');
-               const copyButton = document.getElementById('copyButton');
-               const downloadPNGButton = document.getElementById('downloadPNGButton');
-
-               let generatedUrl = '';
-               let currentCanvas = null;
-
-               // Ocultar/Mostrar Paneles
-               function mostrarError(mensaje) {
-                    errorMessage.textContent = mensaje;
-                    errorMessage.style.display = 'block';
-                    qrContainer.style.display = 'none';
-                    actionsContainer.style.display = 'none';
-               }
-
-               function ocultarError() {
-                    errorMessage.style.display = 'none';
-               }
-
-               function generarQRAltaCalidad(finalUrl) {
-                    try {
-                         const typeNumber = 0;
-                         const errorCorrectionLevel = 'H';
-                         const qr = qrcode(typeNumber, errorCorrectionLevel);
-                         qr.addData(finalUrl);
-                         qr.make();
-
-                         const moduleCount = qr.getModuleCount();
-                         const escala = 8; // Calidad máxima por defecto
-                         const baseSize = 50;
-                         const scaledSize = baseSize * escala;
-                         const cellSize = scaledSize / moduleCount;
-
-                         // Crear canvas de alta resolución
-                         const canvas = document.createElement('canvas');
-                         canvas.width = scaledSize;
-                         canvas.height = scaledSize;
-
-                         const ctx = canvas.getContext('2d');
-
-                         // Configurar para bordes nítidos
-                         ctx.imageSmoothingEnabled = false;
-
-                         // Fondo blanco
-                         ctx.fillStyle = '#ffffff';
-                         ctx.fillRect(0, 0, scaledSize, scaledSize);
-
-                         // Dibujar módulos QR
-                         ctx.fillStyle = '#000000';
-
-                         for (let row = 0; row < moduleCount; row++) {
-                              for (let col = 0; col < moduleCount; col++) {
-                                   if (qr.isDark(row, col)) {
-                                        ctx.fillRect(
-                                             Math.floor(col * cellSize),
-                                             Math.floor(row * cellSize),
-                                             Math.ceil(cellSize),
-                                             Math.ceil(cellSize)
-                                        );
-                                   }
-                              }
-                         }
-
-                         return canvas;
-                    } catch (error) {
-                         throw new Error('Error al generar QR: ' + error.message);
-                    }
-               }
-
-               function mostrarQR(finalUrl) {
-                    qrContainer.innerHTML = '';
-                    ocultarError();
-
-                    try {
-                         const canvas = generarQRAltaCalidad(finalUrl);
-                         currentCanvas = canvas;
-
-                         // Crear un canvas de visualización con tamaño fijo
-                         const displayCanvas = document.createElement('canvas');
-                         displayCanvas.width = 220;
-                         displayCanvas.height = 220;
-
-                         const displayCtx = displayCanvas.getContext('2d');
-                         displayCtx.imageSmoothingEnabled = false;
-                         displayCtx.drawImage(canvas, 0, 0, 220, 220);
-
-                         qrContainer.appendChild(displayCanvas);
-                         qrContainer.style.display = 'block';
-                         actionsContainer.style.display = 'block';
-                         finalUrlDisplay.textContent = finalUrl;
-                    } catch (error) {
-                         mostrarError(error.message);
-                    }
-               }
-
-               // --- Lógica de Validación y Prefijo ---
-               function procesarURL(rawUrl) {
-                    if (!rawUrl || rawUrl.trim() === '') {
-                         mostrarError('Ingresá una URL antes de continuar.');
-                         return null;
-                    }
-                    if (rawUrl.includes(' ')) {
-                         mostrarError('La URL no puede tener espacios.');
-                         return null;
-                    }
-                    if (rawUrl.indexOf('.') === -1 && !rawUrl.startsWith('localhost')) {
-                         mostrarError('La URL no es válida. Ejemplo: "https://www.google.com"');
-                         return null;
-                    }
-
-                    let finalUrl = rawUrl.trim();
-
-                    if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
-                         finalUrl = 'https://' + finalUrl;
-                    }
-
-                    return finalUrl;
-               }
-
-               // --- Eventos ---
-               qrForm.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    const rawUrl = urlInput.value;
-                    const finalUrl = procesarURL(rawUrl);
-
-                    if (finalUrl) {
-                         generatedUrl = finalUrl;
-                         mostrarQR(finalUrl);
-                    }
-               });
-
-               copyButton.addEventListener('click', () => {
-                    if (!generatedUrl) return;
-
-                    navigator.clipboard.writeText(generatedUrl)
-                         .then(() => {
-                              const originalText = copyButton.textContent;
-                              copyButton.textContent = '¡Copiado!';
-                              setTimeout(() => {
-                                   copyButton.textContent = originalText;
-                              }, 2000);
-                         })
-                         .catch(err => {
-                              console.error('Error al copiar: ', err);
-                              const textArea = document.createElement('textarea');
-                              textArea.value = generatedUrl;
-                              document.body.appendChild(textArea);
-                              textArea.select();
-                              try {
-                                   document.execCommand('copy');
-                                   copyButton.textContent = '¡Copiado!';
-                                   setTimeout(() => {
-                                        copyButton.textContent = 'Copiar URL';
-                                   }, 2000);
-                              } catch (fallbackErr) {
-                                   alert('No se pudo copiar la URL. Cópiala manualmente: ' + generatedUrl);
-                              }
-                              document.body.removeChild(textArea);
-                         });
-               });
-
-               downloadPNGButton.addEventListener('click', () => {
-                    if (!currentCanvas) return;
-
-                    // Usar el canvas de alta resolución para la descarga
-                    const link = document.createElement('a');
-                    link.href = currentCanvas.toDataURL('image/png', 1.0);
-                    link.download = 'codigo-qr.png';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-               });
-
-          });
-     </script>
+     <script src="script.js"></script>
 
 </body>
 

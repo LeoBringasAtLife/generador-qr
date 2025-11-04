@@ -1,0 +1,73 @@
+=== Mejoras Visuales de UI/UX ===
+
+[x] 1- Responsive Total
+El layout está centrado y limitado en ancho, pero podrías usar media queries para mejorar la usabilidad en dispositivos móviles.
+
+[x] Ejemplo [ya aplicado]
+
+@media (max-width: 600px) {
+     body {
+          max-width: 100%;
+          padding: 10px;
+     }
+
+     input[type="text"] {
+          width: 100%;
+     }
+}
+
+
+[] 2- Feedback Visual Mejorado
+Añadir animaciones sutiles o transiciones en la aparición/desaparición de mensajes de error, QR, etc., para que la experiencia del usuario (UI) sea más agradable.
+
+[] 3- Validación en Tiempo Real
+Mientras el usuario escribe o pega una URL, podrías mostrar automáticamente si la URL es válida antes de generar, sin que presione "Generar QR".
+
+=== Mejoras Técnicas ===
+
+[] 4- Soporte para URLs sin "www
+."
+El validador puede rechazar URLs que no contienen "." (por ej.: direcciones IP o dominios ".dev" locales). Considerar una validación más flexible usando expresiones regulares.
+
+[] 5- Descargar en otros formatos
+Ofrecer las descargas en otros formatos, como SVG, que permite escalado infinito y mejores impresiones.
+
+[] 6- Preview Instantánea
+Mostrar el QR tan pronto como la URL sea válida (sin la necesidad de presionar "Generar QR"), si el usuario lo prefiere.
+
+=== Accesibilidad ===
+
+[] 7- Etiquetas y ARIA
+Añadir etiquetas <label> y atributos ARIA apropiados para que los usuarios de ayudas técnicas puedan usar la aplicación cómodamente.
+
+[] 8- Contrastes de colores
+Asegurarse de que los mensajes de error y botones tengan un buen contraste para quienes tienen dificultades de visión.
+
+=== Seguridad ===
+
+[] 9- Escapado de Entrada
+Asegurarse de que los datos que se muestran en pantalla sean escapados para evitar XSS, aunque el riesgo está en el siguiente punto.
+
+=== Funcionalidades Extras ===
+
+[] 10- Historial de QRs Generados
+Mostrar una lista de los últimos QRs generados para que el usuario pueda volver a descargarlos o copiarlos fácilmente.
+
+[] 11- Compatibilidad PWA (Progressive Web Apps)
+Hacer una página PWA capaz de instalarse en móvil y usarse offline.
+
+[x] ya está aplicado en el código.
+[ ] no está aplicado en el código.
+
+========
+Lo más importante.
+========
+Feedback Visual Mejorado (2) – Animaciones y transiciones sutiles hacen la app más agradable y profesional.
+
+Validación en Tiempo Real (3) – Evita que el usuario genere URLs inválidas y mejora mucho la UX.
+
+Soporte para URLs sin "www." (4) – Evita que el validador rechace direcciones válidas y hace tu app más flexible.
+
+Preview Instantánea (6) – Complementa la validación en tiempo real, agiliza la experiencia al generar QR.
+
+Escapado de Entrada (9) – Crucial para seguridad (evita XSS).
